@@ -1,0 +1,6 @@
+This challenge is a textbook length extension attack inspired by the Flickr API 
+debacle (https://vnhacker.blogspot.com/2009/09/flickrs-api-signature-forgery.html) and the
+corresponding cryptopals challenge (https://cryptopals.com/sets/4/challenges/29). The 
+participants start with a valid message and its Message Authentication Code (MAC).
+Examination of the source code shows that it computes the mac with RIPEMD-160(secret_key||message).
+RIPEMD 
