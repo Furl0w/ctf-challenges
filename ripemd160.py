@@ -1,7 +1,13 @@
+# Implementation of RIPEMD160 taken 
+# from https://github.com/jcook/python-crypto-debian/blob/master/lib/Crypto/Hash/RIPEMD160.py
+
+
+
 import struct
 
+# ATTACK: mac given in the challenge
 mac = "50cb15dc7c9eac0d5532d78f3622c73d4369d803"
-
+initial_length = 64
 
 def u32(n):
     return n & 0xFFFFffff
@@ -111,7 +117,6 @@ def rol(s, n):
     return u32((n << s) | (n >> (32-s)))
 
 # Initial value, ATTACK: initialized to the mac
-#initial_h = tuple(struct.unpack("<5L", "0123456789ABCDEFFEDCBA9876543210F0E1D2C3".decode('hex')))
 initial_h = tuple(struct.unpack("<5L", mac.decode('hex')))
 
 def box(h, f, k, x, r, s):
@@ -170,14 +175,14 @@ def digest(ripe_h,ripe_bytes,ripe_buf):
     # Merkle-Damgard strengthening, per RFC 1320
     # We pad the input with a 1, followed by zeros, followed by the 64-bit
     # length of the message in bits, modulo 2**64.
-    length = ((ripe_bytes + 78) << 3) & (2**64-1) # The total length of the message in bits, modulo 2**64
+    # ATTACK: WE ADD 64 the length of the first block which is now part of our message
+    length = ((ripe_bytes + initial_length) << 3) & (2**64-1) # The total length of the message in bits, modulo 2**64
     assert len(ripe_buf) < 64
     data = ripe_buf + "\x80"
     if len(data) <= 56:
         # one final block
         assert len(data) <= 56
         data = struct.pack("<56sQ", data, length)
-        print(data.encode("hex"))
     else:
         assert len(data) <= 120
         data = struct.pack("<120sQ", data, length)
@@ -187,10 +192,8 @@ def digest(ripe_h,ripe_bytes,ripe_buf):
 def hexdigest(ripe_h,ripe_bytes,ripe_buf):
     return digest(ripe_h,ripe_bytes,ripe_buf).encode('hex')
 
-
-###########################
+#string to add to the new message
 message = ";verified=true"
-
 ripe_h = initial_h
 ripe_bytes = 0
 ripe_buf = ""
@@ -198,4 +201,3 @@ ripe_buf = ""
 (ripe_h,ripe_bytes,ripe_buf) = update(message,ripe_h,ripe_bytes,ripe_buf)
 print(hexdigest(ripe_h,ripe_bytes,ripe_buf))
 
-#75fb577b8c8994f86157cfeb42b85657538b12c0

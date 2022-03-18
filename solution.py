@@ -2,9 +2,9 @@ message = "order=open_all_chests"
 bytes_message = bytes(message, "utf-8")
 mac = "50cb15dc7c9eac0d5532d78f3622c73d4369d803"
 
-length_initial = len(bytes_message) + 16  # length in bytes
+length_initial = len(bytes_message) + 16  # length in bytes of the message + length of the secret
 
-
+# following the MD4 RFC 1320 padding
 def make_padding(length):
     tmp = [0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -26,9 +26,10 @@ padding = [hex(x)[2:] for x in padding]
 final_padding = ""
 for x in padding:
     if len(x) == 1:
-        x += "0"
+        x = "0" + x
     final_padding += x
 bytes_message += bytes.fromhex(final_padding)
 bytes_message += bytes(";verified=true", "utf-8")
 print(bytes_message.hex())
-print(len(bytes_message)+16)
+
+#output the forged message
