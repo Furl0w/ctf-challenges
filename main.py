@@ -8,6 +8,7 @@ with open('secret_key.txt') as f:
 secret = bytes.fromhex(secret)
 
 # Waiting for orders
+# Orders should be "message;mac" with both in hexadecimal representation
 message = sys.argv[1]
 mac = sys.argv[2]
 
@@ -25,4 +26,4 @@ if mac == h.hexdigest():
     else:
         print("I'm sorry dave, I'm afraid I can't do that")
 else:
-    print("Invalid message. ABORT! ABORT!")
+    print("Access not authorized!")

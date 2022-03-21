@@ -1,6 +1,6 @@
 # Implementation of RIPEMD160 taken 
 # from https://github.com/jcook/python-crypto-debian/blob/master/lib/Crypto/Hash/RIPEMD160.py
-
+# with some adaptation
 
 
 import struct
