@@ -7,8 +7,7 @@ with open('secret_key.txt') as f:
 # importing our very secure 16 bytes key
 secret = bytes.fromhex(secret)
 
-# Waiting for orders
-# Orders should be "message;mac" with both in hexadecimal representation
+# Inputs should be "message;mac" with both in hexadecimal representation
 sys.stdout.flush()
 input = input()
 
@@ -18,7 +17,8 @@ mac = input.split(";")[1]
 
 # Let's make sure that this message is REALLY legit
 h = hashlib.new('ripemd160')
-h.update(secret+bytes.fromhex(message))
+h.update(secret + bytes.fromhex(message))
+
 if mac == h.hexdigest():
     message = bytes.fromhex(message).decode('utf-8','ignore')
     if ";verified=true" in message:
