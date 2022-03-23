@@ -9,9 +9,11 @@ secret = bytes.fromhex(secret)
 
 # Waiting for orders
 # Orders should be "message;mac" with both in hexadecimal representation
-message = sys.argv[1]
-mac = sys.argv[2]
+sys.stdout.flush()
+input = input()
 
+message = input.split(";")[0]
+mac = input.split(";")[1]
 
 
 # Let's make sure that this message is REALLY legit
